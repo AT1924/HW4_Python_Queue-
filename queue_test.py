@@ -28,6 +28,39 @@ def test_input_error():
     with pytest.raises(EmptyQueueException):
         q.dequeue()
 
+
+def test_listAtFullCapacity():
+    q = Queue(1)
+    q.enqueue(1)
+    assert q.capacity() == 2, "Incorrect Capacity"
+    assert q.dequeue() == 1
+
+def testWrappedQueue():
+    # test enqueueing and dequeueing item on wrapped list
+    q = Queue(3)
+    q.enqueue(1)
+    q.enqueue(2)
+    assert q.dequeue() == 1
+    q.enqueue(3)
+    q.enqueue(4)
+    assert q.dequeue() == 2
+    assert q.dequeue() == 3
+    assert q.dequeue() == 4
+
+def testShrinkCapacity():
+    q = Queue(4)
+    q.enqueue(1)
+    assert q.capacity() == 2
+
+def testQueue():
+    q = Queue(4)
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    assert q.dequeue() == 1
+    assert q.dequeue() == 2
+    assert q.dequeue() == 3
+
 def get_tests():
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # IMPORTANT
@@ -41,7 +74,7 @@ def get_tests():
     # We will not be able to properly grade your coal tests if you do not follow
     # these instructions! You will lose points on your submission for failing
     # to follow these instructions.
-    return [test_1, test_input_error]
+    return [test_1, test_input_error, test_listAtFullCapacity, testWrappedQueue, testQueue, testShrinkCapacity]
 
 # DO NOT EDIT BELOW THIS LINE ==================================================
 
