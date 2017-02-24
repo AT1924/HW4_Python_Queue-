@@ -29,6 +29,7 @@ class Queue:
         self.myCapacity = initial_capacity
         self._myList = [None] * initial_capacity
         self.end, self.begin = 0, 0
+        self.mySize = 0
 
 
     def size(self):
@@ -38,14 +39,7 @@ class Queue:
         Produces: the number of items in the queue
         Example: size() -> 9
         """
-        if self.is_empty():
-            return 0
-        elif self.end > self.begin:
-            # not wrapped
-            return self.end - self.begin + 1
-        else:
-            #wrapped
-            return self.end + self.initialCap - self.begin + 1
+        return self.mySize
 
     def is_empty(self):
         """is_empty: queue -> bool
@@ -54,7 +48,7 @@ class Queue:
         Produces: boolean
         Example: is_empty() -> false
         """
-        return self.begin == self.end
+        return self.mySize == 0
 
     def enqueue(self,any):
         """enqueue: queue * any -> .
@@ -66,16 +60,26 @@ class Queue:
         # enqueue item
         self._myList[self.end] = any
         self.end += 1
+        self.mySize += 1
 
         # if we have reached capacity increase list size
         if self.size() == self.capacity():
             newList = [None] * 2 * self.capacity()
-            for i in range(self.capacity()):
-                newList[i] == self.dequeue()
+
+            index = self.begin
+            for i in range(self.size()):
+                newList[i] = self._myList[index]
+                index += 1
+                if index == self.capacity():
+                    index = 0
+            self.begin = 0
+            self.end = self.size()
+
             self._myList = newList
+            self.myCapacity = self.capacity() * 2
 
         #wrapped
-        if self.end == self.capacity() + 1:
+        if self.end == self.capacity():
             self.end = 0
 
     def dequeue(self):
@@ -95,18 +99,24 @@ class Queue:
         val = self._myList[self.begin]
         self._myList[self.begin] = None
         self.begin += 1
+        self.mySize -= 1
 
         # wrapped
-        if self.begin > self.capacity():
+        if self.begin >= self.capacity():
             self.begin = 0
 
         # shrink when size is less than one quarter and capacity is greater than 3
         if self.size() <= self.capacity()/ 4 and self.capacity() > 3:
-            newList = [None] * self.capacity()/2
-            self.myCapacity = self.capacity()/2
-            for i in range(self.myCapacity):
-                newList[i] = self._myList[i]
-                self._myList = newList
+            newList = [None] * (self.capacity()/2)
+            index = self.begin
+            for i in range(self.size()):
+                newList[i] = self._myList[index]
+                index += 1
+            self._myList = newList
+            #update capacity
+            self.myCapacity = self.capacity() / 2
+            self.begin = 0
+            self.end = self.size()
 
         return val
 
@@ -131,7 +141,7 @@ class Queue:
         Produces: number of elements the queue can hold
         Example: capacity() -> 16
         """
-        return self.initialCap
+        return self.myCapacity
 
 
 
