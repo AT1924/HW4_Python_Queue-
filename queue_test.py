@@ -50,6 +50,10 @@ def testWrappedQueue():
 def testShrinkCapacity():
     q = Queue(4)
     q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    q.dequeue()
+    q.dequeue()
     assert q.capacity() == 2
 
 def testQueue():
